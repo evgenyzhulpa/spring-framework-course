@@ -9,8 +9,9 @@ import org.springframework.context.annotation.*;
 @PropertySource("classpath:application.properties")
 public class DefaultAppConfig {
     @Bean
-    @Profile("default")
+    @Profile("!init")
     public ContactInitializer contactInitializer() {
         return new DefaultContactInitializer();
     }
+
 }

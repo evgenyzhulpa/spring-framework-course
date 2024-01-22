@@ -1,6 +1,7 @@
 package org.example;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class FileContactInitializer implements ContactInitializer{
-
     @Value("${app.contact-data-file.path}")
     private String contactDataFilePath;
 
