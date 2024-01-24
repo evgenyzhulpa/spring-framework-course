@@ -1,31 +1,32 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.TreeSet;
 
 @Component
 public class ContactService {
-    private TreeSet<Contact> contacts;
+    @Getter
+    @Setter
+    private TreeSet<Contact> contacts = new TreeSet<>();
+    @Value("${app.contact-data-file.path}")
+    private String contactDataFilePath;
     @Value("${contact-storage-file.path}")
     private String contactStorageFilePath;
-    private final ContactInitializer contactInitializer;
-
-    public ContactService(ContactInitializer contactInitializer) {
-        this.contactInitializer = contactInitializer;
-        try {
-            contacts = contactInitializer.init();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void runService() {
         boolean isRunning = true;
@@ -77,7 +78,7 @@ public class ContactService {
             addNewContact();
             return;
         }
-        contacts.add(contactInitializer.addNewContact(data, "; "));
+        contacts.add(addNewContact(data, "; "));
         System.out.println("Контакт успешно добавлен!");
     }
 
@@ -107,4 +108,9 @@ public class ContactService {
         printWriter.close();
         System.out.println("Данные выгружены успешно.");
     }
+    public Contact addNewContact(String data, String regex) {
+        String[] dataArray = data.split(regex);
+        return new Contact(dataArray[0], dataArray[1], dataArray[2]);
+    }
+
 }

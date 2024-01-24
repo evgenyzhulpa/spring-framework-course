@@ -1,15 +1,36 @@
 package org.example.config;
 
-import org.example.ContactInitializer;
-import org.example.FileContactInitializer;
+import org.example.Contact;
+import org.example.ContactService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.TreeSet;
 
 @Configuration
 @PropertySource("classpath:application-init.properties")
 @Profile("init")
 public class InitAppConfig {
-    @Bean
-    public ContactInitializer contactInitializer() {
-        return new FileContactInitializer();
+
+    @Value("${app.contact-data-file.path}")
+    private String contactDataFilePath;
+    private ContactService contactService;
+
+    public InitAppConfig(ContactService contactService) {
+        this.contactService = contactService;
+    }
+
+    @PostConstruct
+    public void initContacts() throws IOException {
+        TreeSet<Contact>contacts = contactService.getContacts();
+        List<String> dataList = Files.readAllLines(Paths.get(contactDataFilePath));
+        dataList.forEach(s -> contacts.add(contactService.addNewContact(s, "; ")));
+        contactService.setContacts(contacts);
     }
 }
