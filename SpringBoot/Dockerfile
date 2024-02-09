@@ -10,4 +10,3 @@ COPY target/SpringBoot.jar app.jar
 # Команда для запуска приложения
 CMD ["java", "-jar", "app.jar"]
 
-SHELL["/bin/shell", "-c"]
