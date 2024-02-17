@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,6 +12,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StudentStorage {
     private final Set<Student> students;
+    private final int minRandomNum = 1;
+    private final int maxRandomNum = 20;
+
+    public void generate() {
+        Random random = new Random();
+        int randomNum = random.nextInt(minRandomNum, maxRandomNum);
+
+        for (int i = 1; i <= randomNum; i++) {
+            String lastName = "Иванов " + i;
+            String firstName = "Иван";
+            add(firstName, lastName, i + maxRandomNum);
+        }
+    }
 
     public void print() {
         if (students.isEmpty()) {
